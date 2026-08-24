@@ -3,5 +3,5 @@ import { register } from "../controllers/auth.controller";
 
 const router = express.Router();
 
-router.post("/regiter", register);
+router.post("/register", register);
 export default router;
