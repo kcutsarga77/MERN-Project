@@ -28,7 +28,8 @@ const userSchema = new mongoose.Schema<IUser>({
     },
     password: {
         type: String,
-        required: [true, "password is required"]
+        required: [true, "password is required"],
+        select: false
     },
     role: {
         type: String,
@@ -41,7 +42,7 @@ const userSchema = new mongoose.Schema<IUser>({
     },
     phone_number: {
         type: String,
-        
+
         default: null
     },
 

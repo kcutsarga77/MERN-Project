@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import User from "../models/user.model";
 import { hashPassword } from "../utils/bcrypt.utils";
 import AppError from "../utils/appError.utils";
+import sendResponse from "../utils/sendResponse.utils";
 
 
 
@@ -37,16 +38,15 @@ export const register = async (req: Request, res: Response, next: NextFunction) 
         const {password: _, ...rest} = user.toObject();
 
         // send success response
-        return res.status(201).json({
+        sendResponse(res, {
             message: "Account Created",
-            success: true,
-            status: "success",
-            data: rest
+            statusCode: 201,
+            data: rest,
         });
     } catch (error) {
         next(error);
     }
-}
+};
 // login
 
 // change password
