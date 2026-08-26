@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import User from "../models/user.model";
-import { hashPassword } from "../utils/bcrypt.utils";
+import { comparePassword, hashPassword } from "../utils/bcrypt.utils";
 import AppError from "../utils/appError.utils";
 import sendResponse from "../utils/sendResponse.utils";
 
@@ -48,7 +48,35 @@ export const register = async (req: Request, res: Response, next: NextFunction) 
     }
 };
 // login
+export const login = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const {email, password} = req.body;
+        if (!email) throw new AppError("email is required", 400);
+        if (!password) throw new AppError("password is required", 400);
 
+        // find by email
+        const user = await User.findOne({email}).select("+password");
+        if (!user) throw new AppError("email or password doesn't match", 400);
+
+        // compare password
+        const isPasswordMatched = await comparePassword(password, user.password);
+        if (!isPasswordMatched) throw new AppError("email or password doesn't match", 400);
+
+        //todo:  create jwt access token
+        
+        // convert user doc to obj and destructure
+        const {password: _, ...rest} = user.toObject();
+
+        // send success response
+        sendResponse(res, {
+            message: "Login success",
+            statusCode: 201,
+            data: rest,
+        });
+    } catch (error) {
+        next(error);
+    }
+};
 // change password
 
 // forgot password

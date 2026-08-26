@@ -24,7 +24,7 @@ app.get("/",(req: Request, res: Response, next: NextFunction) => {
 });
 
 // using routes
-app.use("/api/auth",authRouter);
+app.use("/api/v1/auth",authRouter);
 // path not found
 app.use((req: Request, res: Response, next : NextFunction) => {
     const message = `can not ${req.method} on ${req.path}`;
