@@ -3,6 +3,7 @@ import User from "../models/user.model";
 import { comparePassword, hashPassword } from "../utils/bcrypt.utils";
 import AppError from "../utils/appError.utils";
 import sendResponse from "../utils/sendResponse.utils";
+import { catchAsync } from "../utils/catchAsync.utils";
 
 
 
@@ -78,6 +79,28 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
     }
 };
 // change password
+export const changePassword = catchAsync(async(req,res) => {
+    const {old_password, new_password, id} = req.body;
+    if (!new_password) throw new AppError("new password is required", 400);
+    if (!old_password) throw new AppError("old password is required", 400);
+
+    const user = await User.findById(id).select("+password");
+    if (!user) throw new AppError("user not found", 400);
+
+    const isPasswordMatched = await comparePassword(old_password, user?.password);
+    if (!isPasswordMatched) throw new AppError("password doesn't match", 400);
+
+    const hash = await hashPassword(new_password);
+    user.password = hash;
+
+    await user.save();
+
+    sendResponse(res, {
+        message: "Password updated",
+        data: null,
+        statusCode: 200
+    });
+})
 
 // forgot password
 
