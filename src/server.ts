@@ -1,8 +1,10 @@
 import app from "./app";
 import http from "http";
+import ENV_CONFIG from "./config/env.config";
 import connectDatabase from "./config/db.config";
-const PORT = 8080;
-const DB_URI = "mongodb://localhost:27017/project_db";
+
+const PORT = ENV_CONFIG.PORT;
+const DB_URI = ENV_CONFIG.DB_URI;
 
 
 // connect database

@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-
+import ENV_CONFIG from "../config/env.config";
 const errorhandler = (
     error: any,
      _: Request,  /* "_" is used for unused parameters */
@@ -17,7 +17,8 @@ const errorhandler = (
             status,
             success,
             data: null,
-            stack: error?.stack ?? null
+            details: error?.details ?? null,
+            stack: ENV_CONFIG.NODE_ENV === "development" ? error?.stack : null
         });
 };
 

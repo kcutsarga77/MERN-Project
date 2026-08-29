@@ -4,6 +4,9 @@ import { comparePassword, hashPassword } from "../utils/bcrypt.utils";
 import AppError from "../utils/appError.utils";
 import sendResponse from "../utils/sendResponse.utils";
 import { catchAsync } from "../utils/catchAsync.utils";
+import { generateJwtToken } from "../utils/jwt.utils";
+import { date } from "zod";
+import ENV_CONFIG from "../config/env.config";
 
 
 
@@ -48,8 +51,8 @@ export const register = catchAsync(async (req, res) => {
 // login
 export const login = catchAsync(async(req, res) => {
     const {email, password} = req.body;
-        if (!email) throw new AppError("email is required", 400);
-        if (!password) throw new AppError("password is required", 400);
+        // if (!email) throw new AppError("email is required", 400);
+        // if (!password) throw new AppError("password is required", 400);  // validation done through middleawre
 
         // find by email
         const user = await User.findOne({email}).select("+password");
@@ -60,15 +63,28 @@ export const login = catchAsync(async(req, res) => {
         if (!isPasswordMatched) throw new AppError("email or password doesn't match", 400);
 
         //todo:  create jwt access token
+        const access_token = generateJwtToken({_id: user._id, email: user.email, role: user.role});
+
         
         // convert user doc to obj and destructure
         const {password: _, ...rest} = user.toObject();
+
+        // set cookie header
+        res.cookie("access_token", access_token,{
+            secure: ENV_CONFIG.NODE_ENV === "development" ? false : true,
+            httpOnly: ENV_CONFIG.NODE_ENV === "development" ? false : true,
+            expires: new Date(Date.now() + ENV_CONFIG.COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000),
+            sameSite: ENV_CONFIG.NODE_ENV === "development" ? "lax": 'none'
+        });
 
         // send success response
         sendResponse(res, {
             message: "Login success",
             statusCode: 201,
-            data: rest,
+            data: {
+                user:rest,
+                access_token
+            },
         });
 });
 // change password

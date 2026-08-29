@@ -1,6 +1,6 @@
 
 import express, {Request, Response, NextFunction }  from "express";
-import errorhandler from "./middlewares/errorHandler.middlewares";
+import errorhandler from "./middlewares/errorHandler.middleware";
 // @types/<pkg_name>
 // npm i --save-dev <pkg_name>
 // npm i -D <pkg_name>

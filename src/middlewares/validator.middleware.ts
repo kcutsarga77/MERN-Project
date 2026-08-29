@@ -12,9 +12,16 @@ export const validate = (schema: ZodObject) => {
             params: req.params,
             query: req.query,
         });
-        
+
         if(result.error) {
-            next(new AppError("Validation error", 400));
+            console.log(result.error.issues);
+            const errors = result.error.issues.map(({message, path}) => {
+                return {
+                    message,
+                    path: path.join(".")
+                };
+            });
+            next(new AppError(errors[0]?.message, 400, errors));
             return;
         }
 
