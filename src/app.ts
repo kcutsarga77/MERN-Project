@@ -1,6 +1,7 @@
 import express, {Request, Response, NextFunction }  from "express";
 import errorhandler from "./middlewares/errorHandler.middleware";
 import AppError from "./utils/appError.utils";
+import cors from "cors";
 // @types/<pkg_name>
 // npm i --save-dev <pkg_name>
 // npm i -D <pkg_name>
@@ -10,8 +11,10 @@ import routes from "./routes";
 
 const app = express();
 
-
 // middleawres
+app.use(cors({
+    origin: ['http://localhost:3000']
+}));
 app.use(express.json());
 
 //health check route
