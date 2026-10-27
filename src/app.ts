@@ -13,7 +13,8 @@ const app = express();
 
 // middleawres
 app.use(cors({
-    origin: ['http://localhost:3000']
+    origin: ['http://localhost:3000'],
+    credentials: true
 }));
 app.use(express.json());
 
@@ -21,7 +22,6 @@ app.use(express.json());
 app.get("/",(req: Request, res: Response, next: NextFunction) => {
     res.status(200).json({
         message: "server is up and running!",
-        
         status: "success",
         success: true,
         data: null

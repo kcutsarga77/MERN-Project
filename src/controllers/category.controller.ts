@@ -33,7 +33,28 @@ export const getById = catchAsync(async(req, res) => {
 });
 
 // create
+export const create = catchAsync(async (req, res) => {
+    const {name, description} = req.body;
 
+    const category = new Category({name, description});
+
+    // upload image
+    
+    // save category
+    await category.save();
+    sendResponse(res,{
+        message: `catregory: ${category.name} created`,
+        statusCode: 201,
+        data: category,
+
+    })
+});
 // update
+export const update = catchAsync(async (req, res) => {
+    
+});
 
 // delete
+export const remove = catchAsync(async (req, res) => {
+    
+});
